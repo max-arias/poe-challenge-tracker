@@ -1,15 +1,14 @@
-const { app, BrowserWindow, globalShortcut } = require('electron')
-const path = require('path')
-const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-window')
-
+const { app, BrowserWindow, globalShortcut } = require('electron');
+const path = require('path');
+const { OverlayController, OVERLAY_WINDOW_OPTS } = require('electron-overlay-window');
 
 let window;
 
-const toggleMouseKey = 'CmdOrCtrl + J'
-const toggleShowKey = 'CmdOrCtrl + K'
+const toggleMouseKey = 'CmdOrCtrl + J';
+const toggleShowKey = 'CmdOrCtrl + K';
 
-app.disableHardwareAcceleration()
-app.enableSandbox()
+app.disableHardwareAcceleration();
+app.enableSandbox();
 
 const createWindow = () => {
   window = new BrowserWindow({
@@ -17,9 +16,9 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
-  })
+      preload: path.join(__dirname, 'preload.js'),
+    },
+  });
 
   // window.loadFile('index.html')
 
@@ -53,48 +52,48 @@ const createWindow = () => {
       });
     </script>
   </body>
-`)
+`);
 
-  setupHotKeys()
+  setupHotKeys();
 
   OverlayController.attachByTitle(
     window,
     'Untitled - Notepad',
     // 'Path of Exile',
-  )
-}
+  );
+};
 
 app.whenReady().then(() => {
-  createWindow()
-})
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit()
-})
+  if (process.platform !== 'darwin') app.quit();
+});
 
 const setupHotKeys = () => {
-  let isInteractable = false
+  let isInteractable = false;
 
   function toggleOverlayState() {
     if (isInteractable) {
-      isInteractable = false
-      OverlayController.focusTarget()
-      window.webContents.send('focus-change', false)
+      isInteractable = false;
+      OverlayController.focusTarget();
+      window.webContents.send('focus-change', false);
     } else {
-      isInteractable = true
-      OverlayController.activateOverlay()
-      window.webContents.send('focus-change', true)
+      isInteractable = true;
+      OverlayController.activateOverlay();
+      window.webContents.send('focus-change', true);
     }
   }
 
   window.on('blur', () => {
-    isInteractable = false
-    window.webContents.send('focus-change', false)
-  })
+    isInteractable = false;
+    window.webContents.send('focus-change', false);
+  });
 
-  globalShortcut.register(toggleMouseKey, toggleOverlayState)
+  globalShortcut.register(toggleMouseKey, toggleOverlayState);
 
   globalShortcut.register(toggleShowKey, () => {
-    window.webContents.send('visibility-change', false)
-  })
-}
+    window.webContents.send('visibility-change', false);
+  });
+};

@@ -1,15 +1,51 @@
 {
-  "name": "poe-challenge-tracker",
+  "name": "electron-vue",
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "electron ."
+    "build": "tsc",
+    "watch": "nodemon --exec yarn serve:electron",
+    "start": "yarn nightly:rename && concurrently -k \"yarn serve:front\" \"yarn watch\"",
+    "front:setup": "cd renderer && yarn",
+    "electron:setup": "yarn",
+    "setup": "yarn front:setup && yarn electron:setup",
+    "serve:front": "cd renderer && yarn dev",
+    "serve:electron": "set APP_IS_DEV=yes && yarn build && wait-on tcp:3000 && electron .",
+    "build:front": "cd renderer && yarn build",
+    "electron:build": "yarn build",
+    "electron:builder": "electron-builder",
+    "dist": " yarn build:front && yarn electron:build && yarn electron:builder",
+    "postinstall": "electron-builder install-app-deps"
   },
-  "main": "src/main.js",
-  "author": "",
+  "main": "./dist/main.js",
+  "author": "Maximiliano Arias",
   "license": "ISC",
   "devDependencies": {
+    "@electron-internal/eslint-config": "^1.0.1",
+    "concurrently": "^8.0.1",
     "electron": "^24.1.2",
-    "electron-overlay-window": "^3.3.0"
+    "electron-builder": "^23.6.0",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-overlay-window": "^3.3.0",
+    "eslint": "^8.39.0",
+    "eslint-plugin-node": "^11.1.0",
+    "json": "^11.0.0",
+    "nodemon": "^2.0.22",
+    "prettier": "2.8.7",
+    "prettier-plugin-tailwindcss": "^0.2.7",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.1",
+    "wait-on": "^7.0.1"
+  },
+  "dependencies": {
+    "electron-log": "^5.0.0-beta.23",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^5.3.0"
+  },
+  "build": {
+    "appId": "com.max-arias.poe-challenge-tracker",
+    "mac": {
+      "category": "games?"
+    }
   }
 }
